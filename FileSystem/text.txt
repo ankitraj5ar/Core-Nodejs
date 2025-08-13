@@ -1,1 +1,0 @@
-Hi this file will be read by nodejs.
