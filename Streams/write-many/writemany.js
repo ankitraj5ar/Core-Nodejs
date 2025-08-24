@@ -56,23 +56,43 @@ import fs from "node:fs/promises";
   const stream = fileHandle.createWriteStream();
 
   console.log(stream.writableHighWaterMark);
-  // console.log(stream.writableLength);
-  const buff = Buffer.alloc(65535, 12);
-  console.log(stream.write(buff));
-  console.log(stream.write(Buffer.alloc(1, "a")));
+  // // console.log(stream.writableLength);
+  // const buff = Buffer.alloc(65535, 12);
+  // console.log(stream.write(buff));
+  // console.log(stream.write(Buffer.alloc(1, "a")));
 
+  // stream.on("drain", () => {
+  //   console.log(stream.write(Buffer.alloc(65535, 12)));
+  //   console.log(stream.write(Buffer.alloc(1, "a")));
+  //   console.log("we are now safe to write.");
+  // });
+  // console.log(stream.writableLength);
+
+  let i = 0;
+  const writeMany = () => {
+    while (i < 1000000) {
+      const buff = Buffer.from(` ${i + 1}`, "utf-8");
+      //this is is our last write close the stream
+      if (i === 999999) {
+        stream.end(buff);
+        return;
+      }
+      // if stream.write return false stop the loop
+      if (!stream.write(buff)) {
+        break;
+      }
+      i++;
+    }
+  };
+  writeMany();
+
+  // resume our stream if internal buffer is full
   stream.on("drain", () => {
-    console.log(stream.write(Buffer.alloc(65535, 12)));
-    console.log(stream.write(Buffer.alloc(1, "a")));
-    console.log("we are now safe to write.");
+    console.log("Draining !!!!");
+    writeMany();
   });
-  // console.log(stream.writableLength);
-
-  // for (let index = 0; index < 1000000; index++) {
-  //   const buff = Buffer.from(`index ${index + 1} \n`, "utf-8");
-  //   stream.write(buff);
-  // }
-
-  // fileHandle.close();
-  console.timeEnd("writeMany");
+  stream.on("finish", () => {
+    fileHandle.close();
+    console.timeEnd("writeMany");
+  });
 })();
