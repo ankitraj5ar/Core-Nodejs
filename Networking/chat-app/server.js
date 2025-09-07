@@ -1,19 +1,36 @@
 import net from "node:net";
 const port = 3000;
-const hostName = "127.0.0.1";
+const hostName = "172.31.35.72";
 
 const server = net.createServer();
 // an array of client sockets
-const client = [];
+const clients = [];
 server.on("connection", (socket) => {
-  console.log("A new client has been connected.");
+  const intClientId = clients.length + 1;
+  socket.write(`id-${intClientId}`);
+
+  // notifying everyone when someone join the room
+  clients.map((client) => {
+    client.socket.write(`User ${intClientId}: joined!.`);
+  });
+
   socket.on("data", (data) => {
-    client.map((s) => {
-      s.write(data);
+    const dataString = data.toString("utf-8");
+    const id = dataString.substring(0, dataString.indexOf("-"));
+    const message = dataString.substring(dataString.indexOf("-message-") + 9);
+    clients.map((client) => {
+      client.socket.write(`> User ${id}: ${message}`);
     });
   });
 
-  client.push(socket);
+  // notifying everyone when someone leave the room.
+  socket.on("end", () => {
+    clients.map((client) => {
+      client.socket.write(`> User ${intClientId} left!.`);
+    });
+  });
+
+  clients.push({ id: intClientId.toString(), socket });
 });
 
 server.listen(port, hostName, () => {
