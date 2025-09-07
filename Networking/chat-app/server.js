@@ -6,7 +6,7 @@ const server = net.createServer();
 // an array of client sockets
 const client = [];
 server.on("connection", (socket) => {
-  console.log("new connection from event");
+  console.log("A new client has been connected.");
   socket.on("data", (data) => {
     client.map((s) => {
       s.write(data);
