@@ -1,4 +1,5 @@
 import http from "node:http";
+import { title } from "node:process";
 
 const agent = new http.Agent({ keepAlive: true });
 
@@ -10,13 +11,22 @@ const request = http.request({
   path: "/create-post",
   headers: {
     "content-type": "application/json",
-    "content-length": 40,
+    name: "ankit raj",
   },
 });
 
-request.on("response", (response) => {});
+request.on("response", (res) => {
+  console.log("STATUs");
+  console.log(res.statusCode);
+  console.log("headers");
+  console.log(res.headers);
+  console.log("body");
+  res.on("data", (chunk) => {
+    console.log(chunk.toString("utf-8"));
+  });
+});
 
-request.write(JSON.stringify({ message: "hi there" }));
-request.write(JSON.stringify({ message: "how are you doing" }));
-request.write(JSON.stringify({ message: "hey you still there" }));
-request.end(JSON.stringify("our last message"));
+request.write(
+  JSON.stringify({ message: "hi there", title: "a message", user: "ankit raj" })
+);
+request.end();
