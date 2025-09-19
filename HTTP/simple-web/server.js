@@ -1,8 +1,6 @@
-import Butter from "./butter.js";
-import fs from "node:fs/promises";
+import Butter from "../butter.js";
 
 const PORT = 3000;
-const hostname = "127.0.0.1";
 const server = new Butter();
 
 server.route("get", "/", (req, res) => {
