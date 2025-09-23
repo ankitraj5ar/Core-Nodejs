@@ -1,5 +1,5 @@
 import Butter from "../butter.js";
-const PORT = 3000;
+const PORT = 9002;
 const USERS = [
   {
     id: 1,
@@ -33,6 +33,7 @@ const server = new Butter();
 
 // files route
 server.route("get", "/", (req, res) => {
+  console.log("server 2 is handling the request.");
   res.sendFile("./public/index.html", "text/html");
 });
 server.route("get", "/login", (req, res) => {
