@@ -23,6 +23,21 @@ const PORT = 3000;
 
 const server = new Butter();
 
+server.beforeEach((req, res, next) => {
+  console.log("this is the firs middleware function");
+  next();
+});
+server.beforeEach((req, res, next) => {
+  setTimeout(() => {
+    console.log("this is the second middleware function");
+    next();
+  }, 2000);
+});
+server.beforeEach((req, res, next) => {
+  console.log("this is the third middleware function");
+  next();
+});
+
 // ------ Files Routes ------ //
 
 server.route("get", "/", (req, res) => {
