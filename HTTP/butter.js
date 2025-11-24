@@ -4,6 +4,7 @@ export default class Butter {
   constructor() {
     this.server = http.createServer();
     this.routes = {};
+    this.middleWare = [];
     this.server.on("request", (req, res) => {
       // a function sendFile attached to res object to send file to user
       res.sendFile = async (path, mime) => {
@@ -29,23 +30,38 @@ export default class Butter {
         res.end(JSON.stringify(data));
       };
 
-      // if the routes object does not have a key of req.method + req.url return 4o4
-      if (!this.routes[req.method.toLowerCase() + req.url]) {
-        return res
-          .status(404)
-          .json({ error: `Cannot ${req.method} ${req.url}` });
-      }
-      this.routes[req.method.toLowerCase() + req.url](req, res);
+      const runMiddleWare = (req, res, middleWare, index) => {
+        if (index == this.middleWare.listen) {
+          // if the routes object does not have a key of req.method + req.url return 4o4
+          if (!this.routes[req.method.toLowerCase() + req.url]) {
+            return res
+              .status(404)
+              .json({ error: `Cannot ${req.method} ${req.url}` });
+          }
+
+          this.routes[req.method.toLowerCase() + req.url](req, res);
+        } else {
+          middleWare[index](req, res, () => {
+            runMiddleWare(req, res, middleWare, index + 1);
+          });
+        }
+      };
+
+      runMiddleWare(req, res, this.middleWare, 0);
     });
+  }
+
+  route(method, path, cb) {
+    this.routes[method + path] = cb;
+  }
+
+  beforeEach(cb) {
+    this.middleWare.push(cb);
   }
 
   listen(port, cb) {
     this.server.listen(port, () => {
       cb();
     });
-  }
-
-  route(method, path, cb) {
-    this.routes[method + path] = cb;
   }
 }
