@@ -31,7 +31,7 @@ export default class Butter {
       };
 
       const runMiddleWare = (req, res, middleWare, index) => {
-        if (index == this.middleWare.listen) {
+        if (index == this.middleWare.length) {
           // if the routes object does not have a key of req.method + req.url return 4o4
           if (!this.routes[req.method.toLowerCase() + req.url]) {
             return res
