@@ -5,6 +5,7 @@ import { spawn, exec } from "node:child_process";
 // subprocess.stdout.on("data", (data) => {
 //   console.log(data.toString());
 // });
+console.log(process.env.PATH);
 
 exec("echo 'something string' | tr ' ' '\n'", (error, stdout, stderr) => {
   if (error) {
