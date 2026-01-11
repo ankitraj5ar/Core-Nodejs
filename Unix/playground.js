@@ -1,17 +1,19 @@
 import { spawn, exec } from "node:child_process";
+import { stdin, stdout, stderr } from "node:process";
 
+console.log(process.argv);
 // const subprocess = spawn("echo 'something string' | tr ' ' '\n'");
 
 // subprocess.stdout.on("data", (data) => {
 //   console.log(data.toString());
 // });
-console.log(process.env.PATH);
+// console.log(process.env.PATH);
 
-exec("echo 'something string' | tr ' ' '\n'", (error, stdout, stderr) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
-  console.log(stdout);
-  console.log("stderr", stderr);
-});
+// exec("echo 'something string' | tr ' ' '\n'", (error, stdout, stderr) => {
+//   if (error) {
+//     console.error(error);
+//     return;
+//   }
+//   console.log(stdout);
+//   console.log("stderr", stderr);
+// });
